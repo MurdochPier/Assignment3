@@ -46,5 +46,8 @@ namespace Assignment3
 
         /// Go through nodes and check if one has value.
         bool Contains(User value);
+
+        /// Reverse node order.
+        void Reverse();
     }
 }
