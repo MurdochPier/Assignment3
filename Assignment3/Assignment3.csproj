@@ -44,12 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Node.cs" />
-    <Compile Include="SLL.cs" />
     <Compile Include="Utility\ILinkedListADT.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProblemDomain\User.cs" />
+    <Compile Include="Utility\Node.cs" />
+    <Compile Include="Utility\SLL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

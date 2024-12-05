@@ -1,41 +1,58 @@
-﻿using System;
+﻿using Assignment3;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
-
-namespace Assignment3.Tests
+public static class SerializationHelper
 {
-    public static class SerializationHelper
+    /// <summary>
+    /// Serializes (encodes) users
+    /// </summary>
+    /// <param name="users">Linked list of users</param>
+    /// <param name="fileName">File path to save serialized data</param>
+    public static void SerializeUsers(ILinkedListADT users, string fileName)
     {
-        /// <summary>
-        /// Serializes (encodes) users
-        /// </summary>
-        /// <param name="users">List of users</param>
-        /// <param name="fileName"></param>
-        public static void SerializeUsers(ILinkedListADT users, string fileName)
+        // Convert the linked list to a List<User>
+        List<User> userList = new List<User>();
+        for (int i = 0; i < users.Count(); i++)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(List<User>));
-            using (FileStream stream = File.Create(fileName))
-            {
-                serializer.WriteObject(stream, users);
-            }
+            userList.Add(users.GetValue(i));
         }
 
-        /// <summary>
-        /// Deserializes (decodes) users
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns>List of users</returns>
-        public static ILinkedListADT DeserializeUsers(string fileName)
+        // Serialize the List<User>
+        DataContractSerializer serializer = new DataContractSerializer(typeof(List<User>));
+        using (FileStream stream = File.Create(fileName))
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(List<User>));
-            using (FileStream stream = File.OpenRead(fileName))
-            {
-                return (ILinkedListADT)serializer.ReadObject(stream);
-            }
+            serializer.WriteObject(stream, userList);
         }
     }
+
+    /// <summary>
+    /// Deserializes (decodes) users
+    /// </summary>
+    /// <param name="fileName">File path to load serialized data</param>
+    /// <returns>Linked list of users</returns>
+    public static ILinkedListADT DeserializeUsers(string fileName)
+    {
+        // Deserialize into a List<User>
+        DataContractSerializer serializer = new DataContractSerializer(typeof(List<User>));
+        List<User> userList;
+        using (FileStream stream = File.OpenRead(fileName))
+        {
+            userList = (List<User>)serializer.ReadObject(stream);
+        }
+
+        // Convert List<User> back to ILinkedListADT (SLL)
+        ILinkedListADT users = new SLL();
+        foreach (User user in userList)
+        {
+            users.AddLast(user);
+        }
+
+        return users;
+    }
 }
+

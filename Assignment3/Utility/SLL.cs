@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Assignment3
 {
+    [Serializable]
     public class SLL : ILinkedListADT
     {
         private Node head;
@@ -199,6 +203,39 @@ namespace Assignment3
             }
 
             head = prev;
+        }
+
+        public MemoryStream SerializeToMemory()
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            try
+            {
+                formatter.Serialize(memoryStream, this);
+            }
+            catch (SerializationException ex)
+            {
+                throw new InvalidOperationException("Serialization failed.", ex);
+            }
+
+            return memoryStream;
+        }
+
+        // Deserialize from memory stream
+        public static SLL DeserializeFromMemory(MemoryStream memoryStream)
+        {
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            try
+            {
+                return (SLL)formatter.Deserialize(memoryStream);
+            }
+            catch (SerializationException ex)
+            {
+                throw new InvalidOperationException("Deserialization failed.", ex);
+            }
         }
 
     }
